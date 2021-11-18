@@ -70,7 +70,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Chan
     private void initializeAll() {
         preference = new SharedPreference(getContext());
         server = preference.getServer();
-
         // Update current selected server icon
         updateCurrentServerIcon(server.getFlagUrl());
 
