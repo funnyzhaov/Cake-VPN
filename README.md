@@ -1,4 +1,23 @@
 # Cake-VPN
+中文版说明
+
+更新服务器列表的说明:
+用assets/ directory .ovpn文件替换/添加你的.ovpn文件
+现在转到MainActivity.class，找到"getServerList()"方法，你必须更新服务器信息。
+[!可选]最后进入SharedPreference.class，找到“getServer()”方法，在那里更新默认的服务器信息。
+</br> </br>
+<img height='450' width ='300' src="https://i.imgur.com/kcGZY4P.png" />
+</br>
+<img height='400' width ='500' src="https://i.imgur.com/mlb8Nqe.png" />
+</br>
+<img height='400' width ='500' src="https://i.imgur.com/GgvoPP9.png" />
+
+
+
+---
+
+以下为英文版
+
 Android VPN app based on OpenVPN library.</br>
 Install app from : <a href="https://play.google.com/store/apps/details?id=com.ashraf789.cakevpn"> Google play store</a> </br>
 
@@ -12,19 +31,6 @@ I use free OpenVPN configuration file from this site https://www.vpngate.net/en/
 I am not sure how long it will work with the free ovpn file. It's better to update ovpn files with your own ovpn.
 </br></br>
 
-## Instruction to update server list:
-1. Replace/add your .ovpn file with <b> assets/</b> directory .ovpn file
-2. Now go to MainActivity.class and find the "getServerList()" method there you have to update server information.
-3. [!Optional] At Last go to SharedPreference.class and find the "getServer()" method there update default server information.
-</br> </br>
-<img height='450' width ='300' src="https://i.imgur.com/kcGZY4P.png" /> 
-</br>
-<img height='400' width ='500' src="https://i.imgur.com/mlb8Nqe.png" />
-</br>
-<img height='400' width ='500' src="https://i.imgur.com/GgvoPP9.png" />
-
-
-
 ## License
 **Free Software!**
 
@@ -33,3 +39,4 @@ This project and the uses VPN library "ICS OpenVPN" both are under GPLv2 License
 > Make sure you understand the licenses of the code. OpenVPN for Android is GPL licensed.
 
 - see the [License File](LICENSE) for more details.
+
