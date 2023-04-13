@@ -111,41 +111,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     private boolean mStarting = false;
     private long mConnecttime;
     private OpenVPNManagement mManagement;
-    /*private final IBinder mBinder = new IOpenVPNServiceInternal.Stub() {
 
-        @Override
-        public boolean protect(int fd) throws RemoteException {
-            return OpenVPNService.this.protect(fd);
-        }
-
-        @Override
-        public void userPause(boolean shouldbePaused) throws RemoteException {
-            OpenVPNService.this.userPause(shouldbePaused);
-        }
-
-        @Override
-        public boolean stopVPN(boolean replaceConnection) throws RemoteException {
-            return OpenVPNService.this.stopVPN(replaceConnection);
-        }
-
-        @Override
-        public void addAllowedExternalApp(String packagename) throws RemoteException {
-            OpenVPNService.this.addAllowedExternalApp(packagename);
-        }
-
-        @Override
-        public boolean isAllowedExternalApp(String packagename) throws RemoteException {
-            return OpenVPNService.this.isAllowedExternalApp(packagename);
-
-        }
-
-        @Override
-        public void challengeResponse(String repsonse) throws RemoteException {
-            OpenVPNService.this.challengeResponse(repsonse);
-        }
-
-
-    };*/
 
     private final IBinder mBinder = new LocalBinder();
     private static String state = "";
@@ -319,7 +285,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         nBuilder.setOngoing(true);
         nBuilder.setSmallIcon(R.drawable.ic_notification);
         if (status == LEVEL_WAITING_FOR_USER_INPUT) {
-            PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            PendingIntent pIntent;
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+                pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+            }else {
+                pIntent =PendingIntent.getActivity(this, 0, intent, 0);
+            }
             nBuilder.setContentIntent(pIntent);
         } else {
             PendingIntent contentPendingIntent = getContentIntent();
@@ -444,7 +415,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     private void addVpnActionsToNotification(Notification.Builder nbuilder) {
         Intent disconnectVPN = new Intent(this, DisconnectVPNActivity.class);
         disconnectVPN.setAction(DISCONNECT_VPN);
-        PendingIntent disconnectPendingIntent = PendingIntent.getActivity(this, 0, disconnectVPN, 0);
+        PendingIntent disconnectPendingIntent;
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            disconnectPendingIntent = PendingIntent.getActivity(this, 0, disconnectVPN, PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            disconnectPendingIntent =PendingIntent.getActivity(this, 0, disconnectVPN, 0);
+        }
 
         nbuilder.addAction(R.drawable.ic_menu_close_clear_cancel,
                 getString(R.string.cancel_connection), disconnectPendingIntent);
@@ -452,13 +428,24 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         Intent pauseVPN = new Intent(this, OpenVPNService.class);
         if (mDeviceStateReceiver == null || !mDeviceStateReceiver.isUserPaused()) {
             pauseVPN.setAction(PAUSE_VPN);
-            PendingIntent pauseVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+
+            PendingIntent pauseVPNPending;
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+                pauseVPNPending = PendingIntent.getService(this, 0, pauseVPN, PendingIntent.FLAG_IMMUTABLE);
+            }else {
+                pauseVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+            }
             nbuilder.addAction(R.drawable.ic_menu_pause,
                     getString(R.string.pauseVPN), pauseVPNPending);
 
         } else {
             pauseVPN.setAction(RESUME_VPN);
-            PendingIntent resumeVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+            PendingIntent resumeVPNPending;
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+                resumeVPNPending = PendingIntent.getService(this, 0, pauseVPN, PendingIntent.FLAG_IMMUTABLE);
+            }else {
+                resumeVPNPending = PendingIntent.getService(this, 0, pauseVPN, 0);
+            }
             nbuilder.addAction(R.drawable.ic_menu_play,
                     getString(R.string.resumevpn), resumeVPNPending);
         }
@@ -470,8 +457,13 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         intent.putExtra("need", needed);
         Bundle b = new Bundle();
         b.putString("need", needed);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 12, intent, 0);
-        return pIntent;
+        PendingIntent startLW;
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            startLW = PendingIntent.getActivity(this, 12, intent, PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            startLW = PendingIntent.getActivity(this, 0, intent, 0);
+        }
+        return startLW;
     }
 
     PendingIntent getGraphPendingIntent() {
@@ -483,7 +475,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
         intent.putExtra("PAGE", "graph");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent startLW = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent startLW;
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            startLW = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            startLW = PendingIntent.getActivity(this, 0, intent, 0);
+        }
         return startLW;
     }
 
@@ -1385,7 +1382,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
         // updateStateString trigger the notification of the VPN to be refreshed, save this intent
         // to have that notification also this intent to be set
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pIntent;
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+            pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            pIntent =PendingIntent.getActivity(this, 0, intent, 0);
+        }
         VpnStatus.updateStateString("USER_INPUT", "waiting for user input", reason, LEVEL_WAITING_FOR_USER_INPUT, intent);
         nbuilder.setContentIntent(pIntent);
 
